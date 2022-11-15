@@ -50,13 +50,8 @@ void setup()
     Serial.println("SD Fail");
     return;
   }
-
   tmrPcm.setVolume(6);
-  
-
-
 }
-
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
@@ -64,8 +59,6 @@ SimplePatternList gPatterns = { rainbow, rainbowWithGlitter, confetti, sinelon, 
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
-
-
   
 void loop()
 { 
@@ -80,7 +73,6 @@ void loop()
 
    // Call the current pattern function once, updating the 'leds' array
   gPatterns[gCurrentPatternNumber]();
-
   // send the 'leds' array out to the actual LED strip
   FastLED.show();  
   // insert a delay to keep the framerate modest
@@ -91,59 +83,63 @@ void loop()
   EVERY_N_SECONDS( 10 ) { nextPattern(); } // change patterns periodically
 }
 
-
-void bothPressed(int buttonState, int buttonState2){
-  if(buttonState == 1 && buttonState2 == 1){
+void bothPressed(int buttonState, int buttonState2)
+{
+  if(buttonState == 1 && buttonState2 == 1)
+  {
     digitalWrite(6, HIGH);
-    }
-    else {
-      digitalWrite(6, LOW);
-      }
+  }
+  else 
+  {
+    digitalWrite(6, LOW);
+  }
+}
   
+void countManager()
+{
+  if(count == 5) 
+  {
+    count = 0;
   }
 
+  if(count == 4) 
+  {
+    turnOffLed();
+    count = 4;
+    Serial.println("Attack");
+  }
 
+  if(count == 0 ) 
+  {
+    setColor(255,0,0);
+    count = 0;
+    Serial.println("Fire!");
+  }
 
+  if(count == 1) 
+  {
+    setColor(0,0,255);
+    count = 1;
+    Serial.println("Freeze!");
+  }
 
-  
-void countManager(){
-  if(count == 5) {
-      count = 0;
-      }
+  if(count == 2) 
+  {
+    setColor(255,255,0);
+    count = 2;
+    Serial.println("Thunder!");
+  }
 
-  if(count == 4) {
-      turnOffLed();
-      count = 4;
-      Serial.println("Attack");
-      }
-
-      if(count == 0 ) {
-      setColor(255,0,0);
-      count = 0;
-      Serial.println("Fire!");
-      }
-
-      if(count == 1) {
-      setColor(0,0,255);
-      count = 1;
-      Serial.println("Freeze!");
-      }
-
-      if(count == 2) {
-      setColor(255,255,0);
-      count = 2;
-      Serial.println("Thunder!");
-      }
-
-      if(count == 3) {
-      setColor(0,255,0);
-      count = 3;
-      Serial.println("Heal!");
-      } 
+  if(count == 3) 
+  {
+    setColor(0,255,0);
+    count = 3;
+    Serial.println("Heal!");
+  } 
 }
 
-
-void mainButton(int buttonState, int buttonState2){
+void mainButton(int buttonState, int buttonState2)
+{
   if (buttonState == 1 && buttonState2 != 1)
   {  
      tmrPcm.play("khselect.wav");
@@ -151,42 +147,51 @@ void mainButton(int buttonState, int buttonState2){
   }
 }
 
-void accentButton(int buttonState, int buttonState2){
-    if (buttonState2 == 1 && buttonState != 1){
-    if(count == 0){
+void accentButton(int buttonState, int buttonState2)
+{
+    if (buttonState2 == 1 && buttonState != 1)
+    {
+      if(count == 0)
+      {
+        delay(500);
+      }
+      if(count == 1)
+      {
+        delay(500);
+      }
+      if(count == 2)
+      {
+        delay(500);
+        tmrPcm.play("thunder.wav");
+      }
+      if(count == 3)
+      {
+        delay(500);
+      }
+      if(count == 4)
+      {
+        delay(500);
+      }
       delay(500);
+      count++;
     }
-    if(count == 1){
-      delay(500);
-    }
-    if(count == 2){
-      delay(500);
-            tmrPcm.play("thunder.wav");
+}
 
-    }
-    if(count == 3){
-      delay(500);
-    }
-    if(count == 4){
-      delay(500);
-    }
-    delay(500);
-    count++;
-  }
- }
-void turnOffLed(){
-     digitalWrite(red_pin, LOW);
-     digitalWrite(green_pin, LOW);
-     digitalWrite(blue_pin, LOW);
-  }
-void setColor(int red, int green, int blue){
+void turnOffLed()
+{
+  digitalWrite(red_pin, LOW);
+  digitalWrite(green_pin, LOW);
+  digitalWrite(blue_pin, LOW);
+}
+
+void setColor(int red, int green, int blue)
+{
   analogWrite(red_pin, red);
   analogWrite(green_pin, green);
   analogWrite(blue_pin, blue);
-  }
+}
 
 
-  
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
 void nextPattern()
@@ -210,7 +215,8 @@ void rainbowWithGlitter()
 
 void addGlitter( fract8 chanceOfGlitter) 
 {
-  if( random8() < chanceOfGlitter) {
+  if( random8() < chanceOfGlitter) 
+  {
     leds[ random16(NUM_LEDS) ] += CRGB::White;
   }
 }
@@ -242,7 +248,8 @@ void bpm()
   }
 }
 
-void juggle() {
+void juggle() 
+{
   // eight colored dots, weaving in and out of sync with each other
   fadeToBlackBy( leds, NUM_LEDS, 20);
   uint8_t dothue = 0;
